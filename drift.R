@@ -63,6 +63,10 @@ calculate_drift_pythagoras <- function(object, force) {
   return(output)
 }
 
+# Units:
+# "heading" is assumed to be in degrees
+# "velocity" can be anything (e.g., m/s or kts) as long as the same unit is used consistently
+
 # Define the object
 object <- c()
 object$heading <- 27
