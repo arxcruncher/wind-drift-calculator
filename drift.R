@@ -28,10 +28,10 @@ calculate_drift_cosine <- function(object, force) {
   force$heading <- normalize_angle(force$heading-object$heading)
   angle <- abs(180-force$heading)
     
-  B <- -2*cos(deg2rad(angle))*force$speed
-  C <- force$speed^2-object$speed^2
-  output$indicated_velocity <- (-B+sqrt(B^2-4*C))/2
-  output$correction <- rad2deg(acos((force$speed^2-(output$indicated_velocity^2+object$speed^2))/(-2*output$indicated_velocity*object$speed)))
+  B <- -2*cos(deg2rad(angle))*force$velocity
+  C <- force$velocity^2-object$velocity^2
+  output$indicated_velocity <- Re(polyroot(c(C,B,1))[1])
+  output$correction <- rad2deg(acos((force$velocity^2-(output$indicated_velocity^2+object$velocity^2))/(-2*output$indicated_velocity*object$velocity)))
   
   if(force$heading > 180)
     output$correction <- output$correction * -1
@@ -51,8 +51,8 @@ calculate_drift_pythagoras <- function(object, force) {
   force$heading <- normalize_angle(force$heading-object$heading)
   angle <- abs(180-force$heading)
   
-  output$correction <- rad2deg(asin(sin(deg2rad(angle))*force$speed/object$speed))
-  output$indicated_velocity <- cos(deg2rad(angle))*force$speed+cos(deg2rad(output$correction))*object$speed
+  output$correction <- rad2deg(asin(sin(deg2rad(angle))*force$velocity/object$velocity))
+  output$indicated_velocity <- cos(deg2rad(angle))*force$velocity+cos(deg2rad(output$correction))*object$velocity
   
   if(force$heading > 180)
     output$correction <- output$correction * -1
@@ -69,14 +69,14 @@ calculate_drift_pythagoras <- function(object, force) {
 
 # Define the object
 object <- c()
-object$heading <- 20
-object$speed <- 95
+object$heading <- 27
+object$velocity <- 95
 
 # Define the force
 #  The force heading is the source of the force, not the force direction. This is common for wind calculations, for example.  
 force <- c()
-force$heading <- 120
-force$speed <- 12
+force$heading <- 243
+force$velocity <- 15
 
 # Calulate drift via cosine and Pythagoras
 # Both outcomes should be the same
